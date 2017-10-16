@@ -1,0 +1,9 @@
+grant permission for php to write to home directory
+1. Give 0777 permission to file itself.
+	sudo chmod 0777 /home/phancuong/filename
+2. Change Ownership to apache user www-data and give owner-write permission.
+	sudo chown www-data:www-data /home/phancuong/filename
+	sudo chmod 0744 /home/phancuong/filename
+3. Add your user to www-data group or vice-verse add www-data user to your group. And then group write permission.
+	sudo usermod -a -G www-data phancuong
+	sudo chmod 0764 /home/phancuong/filename
