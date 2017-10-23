@@ -3,7 +3,8 @@
 	* 
 	*/
 	class Report 
-	{
+	{	
+		var $usepackage = array();
 		var $template;
 		var $title;
 		var $date;
@@ -14,10 +15,14 @@
 		var $filestring;
 		function __construct($template, $title, $date, $author)
 		{
+			$this->template = $template;	
 			$this->title = $title;
 			$this->date = date("d/m/Y");
-			$this->template = $template;	
 			$this->author = $author;	
+		}
+
+		function addUsePackage($package){
+			array_push($this->usepackage, $package);
 		}
 
 		function addSection($section){
@@ -26,6 +31,10 @@
 
 		function addSubsection($subsection){
 			$this->filestring .= "\subsection{{$subsection}}\n";
+		}
+
+		function addSubSubsecion($subsubsection){
+			$this->filestring .= "\subsubsection{{$subsubsection}}\n";
 		}
 
 		function addParagraph($paragraph){
@@ -48,20 +57,32 @@
 			$this->filestring .= $string;
 		}
 
+		function addLongTable($table){
+			$stringFormat = "\\begin{longtable}{%s}\n";
+			$string = sprintf($stringFormat, $table->template);
+			$string .= $table->rowCollection;
+			$string .= "\\end{longtable}";
+			$this->filestring .= $string;
+		}
+
 		function createLatexFile($filepath){
 			//$filepath = "/home/phancuong/Latex_Files/latex.tex";
 			$file = fopen($filepath, "w")  or die ("Unable to create file");
-			$format = "\documentclass[a4paper,12pt]{%s}\n\usepackage{graphicx}\n\begin{document}\n\\title{%s}\n\author{%s}\n\date{%s}\n\maketitle\n%s\n\\end{document}";
+			$packageString = "";
+			foreach ($this->usepackage as $key => $package) {
+				$packageString = $packageString . "\\usepackage{" . $package . "}\n";
+			}
+			$format = "\documentclass[a4paper,12pt]{%s}\n%s\begin{document}\n\\title{%s}\n\author{%s}\n\date{%s}\n\maketitle\n%s\n\\end{document}";
 			
-			$string = sprintf($format, $this->template, $this->title, $this->date, $this->author, $this->filestring);
-			echo $string;
+			$string = sprintf($format, $this->template, $packageString, $this->title, $this->date, $this->author, $this->filestring);
+			print($string);
 			fwrite($file, $string);
 			fclose($file);
 		}
 
 		function createPdfFile($filepath){
 			$output = shell_exec("pdflatex " . $filepath);
-			print($output);
+			//print($output);
 		}
 
 	}
