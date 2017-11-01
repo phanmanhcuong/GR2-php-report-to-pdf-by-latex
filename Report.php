@@ -4,7 +4,7 @@
 	*/
 	class Report 
 	{	
-		var $usepackage = array();
+		var $usepackage;
 		var $template;
 		var $title;
 		var $date;
@@ -22,7 +22,15 @@
 		}
 
 		function addUsePackage($package){
-			array_push($this->usepackage, $package);
+			$packageString = "";
+			$packageString = "\\usepackage" . "{" . $package . "}\n";
+			$this->usepackage .= $packageString;
+		}
+
+		function addUsePackageWithParameter($parameter, $package){
+			$packageString = "";
+			$packageString = "\\usepackage" . "[" . $parameter . "]{" . $package ."}\n";
+			$this->usepackage .= $packageString;
 		}
 
 		function addSection($section){
@@ -68,13 +76,13 @@
 		function createLatexFile($filepath){
 			//$filepath = "/home/phancuong/Latex_Files/latex.tex";
 			$file = fopen($filepath, "w")  or die ("Unable to create file");
-			$packageString = "";
-			foreach ($this->usepackage as $key => $package) {
-				$packageString = $packageString . "\\usepackage{" . $package . "}\n";
-			}
-			$format = "\documentclass[a4paper,12pt]{%s}\n%s\begin{document}\n\\title{%s}\n\author{%s}\n\date{%s}\n\maketitle\n%s\n\\end{document}";
+			// $packageString = "";
+			// foreach ($this->usepackage as $key => $package) {
+			// 	$packageString = $packageString . "\\usepackage{" . $package . "}\n";
+			// }
+			$format = "\documentclass[a4paper,13pt]{%s}\n%s\begin{document}\n\\title{%s}\n\author{%s}\n\date{%s}\n\maketitle\n%s\n\\end{document}";
 			
-			$string = sprintf($format, $this->template, $packageString, $this->title, $this->date, $this->author, $this->filestring);
+			$string = sprintf($format, $this->template, $this->usepackage, $this->title, $this->date, $this->author, $this->filestring);
 			print($string);
 			fwrite($file, $string);
 			fclose($file);

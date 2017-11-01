@@ -6,6 +6,12 @@
 	$latex->addUsePackage("multirow");
 	$latex->addUsePackage("hhline");
 	$latex->addUsePackage("longtable");
+	//for vietnamese
+	$latex->addUsePackageWithParameter("utf8", "inputenc");
+	$latex->addUsePackageWithParameter("vietnam", "babel");
+	//for Times New Roman
+	$latex->addUsePackageWithParameter("T1", "fontenc");
+	$latex->addUsePackage("txtfonts");
 	$latex->addSection("First section");
 	$latex->addSubsection("First subsection");
 	$latex->addParagraph("Hello World 1");
@@ -16,11 +22,11 @@
 	$table = new Table("|r|r|r|");
 	$table->addHorizontalLine();
 	for ($i=0; $i < 10; $i++) { 
-		$rowloop = array("Hoang Van A", "Nguyen Van B", "Nguyeen Thi C");
+		$rowloop = array("Hoang Van A", "Nguyễn Văn B", "Nguyeen Thi C");
 		$table->addRow($rowloop);
 		$table->addHorizontalLine();
 	}
-	$row = array("Phan Manh Cuong", "Cuong Phan");
+	$row = array("Phan Manh Cuong", "Cuong ");
 	$mergedColumns = array(array(1, 2, "|c|"));
 	$table->addRowWithMergedColumns($row, $mergedColumns);
 	$table->addHorizontalLine();
