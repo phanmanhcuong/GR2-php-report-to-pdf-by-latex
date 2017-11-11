@@ -11,7 +11,8 @@
 	$latex->addUsePackageWithParameter("vietnam", "babel");
 	//for Times New Roman
 	$latex->addUsePackageWithParameter("T1", "fontenc");
-	$latex->addUsePackage("txtfonts");
+	$latex->addUsePackage("txfonts");
+	
 	$latex->addSection("First section");
 	$latex->addSubsection("First subsection");
 	$latex->addParagraph("Hello World 1");
@@ -27,14 +28,17 @@
 		$table->addHorizontalLine();
 	}
 	$row = array("Phan Manh Cuong", "Cuong ");
-	$mergedColumns = array(array(1, 2, "|c|"));
+	//$row = array("Phan Manh Cuong", "{\\multirow{2}{*}{Cuong }} ");
+	$mergedColumns = array(array(2, 3, "|c|"));
 	$table->addRowWithMergedColumns($row, $mergedColumns);
 	$table->addHorizontalLine();
 	$row1 = array("merged row", "2", "3");
-	$row2 = array("", "4", "5");
-	$table->addMergedRow($row1, 1, 2);
-	$table->addhhLine(1, 3);
+	$row2 = array("4", " ", "5");
+	$table->addMergedRow($row1, 2, 2);
+	$table->addhhLine(0, 1);
+	$table->addhhLine(2, 3);
 	$table->addRow($row2);
+	
 	$table->addHorizontalLine();
 	$latex->addLongTable($table);
 	$latex->createLatexFile("latex.tex");

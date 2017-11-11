@@ -1,6 +1,6 @@
 <?php
 	/**
-	* 
+	* texlive-lang-vietnamese
 	*/
 	class Report 
 	{	
@@ -8,17 +8,23 @@
 		var $template;
 		var $title;
 		var $date;
-		var $author;
+		//var $author;
 		var $section = array();
 		var $subsection = array();
 		var $content = array();
 		var $filestring;
-		function __construct($template, $title, $date, $author)
+		// function __construct($template, $title, $date, $author)
+		// {
+		// 	$this->template = $template;	
+		// 	$this->title = $title;
+		// 	$this->date = date("d/m/Y");
+		// 	$this->author = $author;	
+		// }
+		function __construct($template, $title, $date)
 		{
 			$this->template = $template;	
-			$this->title = $title;
-			$this->date = date("d/m/Y");
-			$this->author = $author;	
+			$this->title = $title;	
+			$this->date = $date;
 		}
 
 		function addUsePackage($package){
@@ -33,20 +39,44 @@
 			$this->usepackage .= $packageString;
 		}
 
+		function addColumnTypeForTable($columnType){
+			$columnTypeString = "\\newcolumntype" . $columnType . "\n";
+			$this->usepackage .= $columnTypeString;
+		}
+
+		function addFont($font){
+			$fontString = "\\setmainfont" . "{" . $font . "}\n";
+			$this->usepackage .= $fontString;
+		}
+
+		function addTitleFormat($item, $format, $theItem, $margin){
+			$format = "\\titleformat{" . $item . "}{" . $format . "}{" . $theItem . "}{" . $margin . "}{}\n";
+			$this->filestring . = $format;
+		}
+
 		function addSection($section){
-			$this->filestring .= "\section{{$section}}\n";
+			$this->filestring .= "\section{$section}\n";
 		}
 
 		function addSubsection($subsection){
-			$this->filestring .= "\subsection{{$subsection}}\n";
+			$this->filestring .= "\subsection{$subsection}\n";
 		}
 
 		function addSubSubsecion($subsubsection){
 			$this->filestring .= "\subsubsection{{$subsubsection}}\n";
 		}
 
+		function reNewCommand($parameter1, $parameter2){
+			$string = "\\renewcommand{" . $parameter1 . "}{" . $parameter2 . "}\n" ;
+			$this->filestring .= $string;
+		}
+
+		function addPlainText($plaintext){
+			$this->filestring .= $plaintext;
+		}
+
 		function addParagraph($paragraph){
-			$this->filestring .= "\paragraph{{$paragraph}}\n";
+			$this->filestring .= "\paragraph{{$paragraph}}";
 		}
 
 		function addSubparagraph($subparagraph){
@@ -57,11 +87,27 @@
 			$this->filestring .= "\begin{figure}[{$placement}]\n\\{$alignment}\n\includegraphics[width=$width]{{$filepath}}\n\caption{{$caption}}\n\label{{$label}}\n\\end{figure}\n";
 		}
 
+		function addCheckBox(){
+			$this->filestring .= "\makebox[0pt][l]{$\square$}\\raisebox{.15ex}{\hspace{0.1em}$\checkmark$}\n";
+		}
+
+		function addEmptyCheckBox(){
+			$this->filestring .= "\makebox[0pt][l]{$\square$}\\raisebox{.15ex}{\hspace{0.1em}}\n";
+		}
+
+		function addNoIndentation(){
+			$this->filestring .= "{\\noindent}";
+		}
+
+		function addLineBreak(){
+			$this->filestring .= "\\\\\n";
+		}
+
 		function addTable($table){
-			$stringFormat = "\\begin{tabular}{%s}\n";
+			$stringFormat = "\\begin{tabularx}{\\textwidth}{%s}\n";
 			$string = sprintf($stringFormat, $table->template);
 			$string .= $table->rowCollection;
-			$string .= "\\end{tabular}";
+			$string .= "\\end{tabularx}";
 			$this->filestring .= $string;
 		}
 
@@ -80,16 +126,16 @@
 			// foreach ($this->usepackage as $key => $package) {
 			// 	$packageString = $packageString . "\\usepackage{" . $package . "}\n";
 			// }
-			$format = "\documentclass[a4paper,13pt]{%s}\n%s\begin{document}\n\\title{%s}\n\author{%s}\n\date{%s}\n\maketitle\n%s\n\\end{document}";
+			$format = "\documentclass[a4paper,13pt]{%s}\n%s\begin{document}\n\\title{%s}\n\date{%s}\n\maketitle\n%s\n\\end{document}";
 			
-			$string = sprintf($format, $this->template, $this->usepackage, $this->title, $this->date, $this->author, $this->filestring);
+			$string = sprintf($format, $this->template, $this->usepackage, $this->title, $this->date, $this->filestring);
 			print($string);
 			fwrite($file, $string);
 			fclose($file);
 		}
 
 		function createPdfFile($filepath){
-			$output = shell_exec("pdflatex " . $filepath);
+			$output = shell_exec("xelatex " . $filepath);
 			//print($output);
 		}
 

@@ -22,7 +22,7 @@
 			$this->rowCollection .= $rowString;
 		}
 
-		//$mergedColumns is 2 dimentional array with value of each key is an array of (start column, end column, alignment of mergedcolumn)
+		//$mergedColumns is 2 dimentional array with value of each key is an array of (start column, end column, alignment of mergedcolumn) in case of many groups of column be merged (trong truong hop nhieu nhom cot duoc gop trong cung 1 hang)
 		function addRowWithmergedColumns($row, $mergedColumns){
 			$rowString = "";
 			for ($i=0; $i < count($row); $i++) {
@@ -33,6 +33,9 @@
 					array_splice($mergedColumns, 0, 1);
 					$rowString .= $string;
 					$rowString .= "&";  
+					} else{
+						$rowString .= $row[$i];
+						$rowString .= "&";
 					}	
 				} else{
 					$rowString .= $row[$i];
@@ -60,6 +63,18 @@
 			$rowString[strlen($rowString)-1] = "\\";
 			$rowString .= "\\\n";
 			$this->rowCollection .= $rowString;
+		}
+
+		function mergeRowsAndColumns($row, $startColumnToMergeRow, $numberOfRowToMergeRow, $startColumnToMergeColumn, $numberOfRowToMergeColumn, $mergedColumns){
+			if(!empty($startColumnToMergeRow) && !empty($numberOfRowToMergeRow)){
+				addMergedRow($row, $startColumnToMergeRow, $numberOfRowToMergeColumn);
+			} 
+			if(!empty($startColumnToMergeColumn) && !empty($numberOfRowToMergeColumn)){
+				addRowWithmergedColumns($mergedColumns);
+			}
+			if(!empty($startColumnToMergeRow) && !empty($numberOfRowToMergeRow) && !empty($startColumnToMergeColumn) && !empty($numberOfRowToMergeColumn)){
+				
+			}
 		}
 
 		function addHorizontalLine(){

@@ -6,10 +6,10 @@
 \usepackage[utf8]{inputenc}
 \usepackage[vietnam]{babel}
 \usepackage[T1]{fontenc}
-\usepackage{txtfonts}
+\usepackage{txfonts}
 \begin{document}
 \title{First Latex File}
-\author{01/11/2017}
+\author{05/11/2017}
 \date{Phan Cuong}
 \maketitle
 \section{First section}
@@ -45,11 +45,12 @@ Hoang Van A&Nguyễn Văn B&Nguyeen Thi C\\
 \hline
 Hoang Van A&Nguyễn Văn B&Nguyeen Thi C\\
 \hline
-\multicolumn{2}{|c|}{Phan Manh Cuong}&Cuong \\
+Phan Manh Cuong&\multicolumn{2}{|c|}{Cuong }\\
 \hline
-\multirow{2}{*}{merged row}&2&3\\
-\hhline{~--}
-&4&5\\
+merged row&\multirow{2}{*}{2}&3\\
+\hhline{-}
+\hhline{-~-}
+4& &5\\
 \hline
 \end{longtable}
 \end{document}
