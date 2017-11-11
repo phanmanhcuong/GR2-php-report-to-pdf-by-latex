@@ -63,7 +63,7 @@
 		}
 
 		function addSubSubsecion($subsubsection){
-			$this->filestring .= "\subsubsection{{$subsubsection}}\n";
+			$this->filestring .= "\subsubsection{$subsubsection}\n";
 		}
 
 		function reNewCommand($parameter1, $parameter2){
@@ -101,6 +101,11 @@
 
 		function addLineBreak(){
 			$this->filestring .= "\\\\\n";
+		}
+
+		function addhspace($length){
+			$string = "\\hspace*{" . $length . "}";
+			$this->filestring .= $string;
 		}
 
 		function addTable($table){
