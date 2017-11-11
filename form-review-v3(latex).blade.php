@@ -9,7 +9,8 @@
 	$report->addUsePackage("hhline");
 	$report->addUsePackage("ltablex");
 	$report->addUsePackage("fontspec");
-	$report->addUsePackage("amssymb"); //checkbox
+	$report->addUsePackage("amssymb");		//checkbox
+	$report->addUsePackage("titlesec"); 		//reformat titles likes subsection to not bold
 	$report->addUsePackageWithParameter("vietnam,english", "babel");
 	$report->addColumnTypeForTable("{C}{>{\centering\arraybackslash}X}");
 	$report->addFont("Times New Roman");
@@ -98,9 +99,11 @@
 	$report->addPlainText("Chuyên ngành " . $major->Name) . ".");
 	$report->reNewCommand("\\thesection",  "\Alph{section}.");	//numbering section by Alphabet letters instead of numbers;
 	$report->addSection("THÔNG TIN CÁ NHÂN");
-	$report->addPlainText("1. Họ và tên người đăng ký: " . $profile->FullName);
-	$report->addLineBreak();
-	$report->addPlainText("2. Ngày tháng năm sinh: " . $profile->BirthDate . ". ");
+	$report->reNewCommand("\\thesubsection", "\arabic{subsection}");	//numbering subsection by numbers
+	$report->addTitleFormat("\subsection", "", "\\thesubsection", "0em");	//unbold the subsection
+	$report->addTitleFormat("\subsubsection", "", "\\thesubsubsection", "0em");	//unbold the subsubsection
+	$report->addSubsection("Họ và tên người đăng ký: " . $profile->FullName);
+	$report->addSubsection("Ngày tháng năm sinh: " . $profile->BirthDate . ". ");
 	if($profile->Sex == 1){
 		$report->addPlainText("Nam ");
 		$report->addCheckBox();
@@ -113,16 +116,14 @@
 		$report->addCheckBox();
 	}
 	$report->addPlainText(". Dân tộc: " . $ethnic->Name);
-	$report->addLineBreak();
-	$report->addPlainText("3. Đảng viên ĐẢNG CSVN: ");
+	$report->addSubsection(". Đảng viên ĐẢNG CSVN: ");
 	if($IsInCommunistParty ==1 ){
 		$report->addPlainText(" Có.");
 	} else{
 		$report->addPlainText(" Không.");
 	}
-	$report->addLineBreak();
-	$report->addPlainText("4. Quê quán:xã/phường/,huyện/quận,tỉnh/thành phố: " . $profile->HomeTown);
-	$report->addPlainText("5. Chỗ ở hiện nay (số nhà, phố, phường, quận, thành phố hoặc xã, huyện, tỉnh: ". $profile->ResidentAddress);
+	$report->addSubsection(". Quê quán:xã/phường/,huyện/quận,tỉnh/thành phố: " . $profile->HomeTown);
+	$report->addSubsection(". Chỗ ở hiện nay (số nhà, phố, phường, quận, thành phố hoặc xã, huyện, tỉnh: ". $profile->ResidentAddress);
 	$report->addLineBreak();
 	$report->addPlainText("Điện thoại nhà riêng: " . $profile->HomePhone);
 	$report->addLineBreak();
@@ -130,9 +131,8 @@
 	$report->addLineBreak();
 	$report->addPlainText("Địa chỉ E-mail: " . $profile->OfficialEmail);
 	$report->addLineBreak();
-	$report->addPlainText("6. Địa chỉ liên hệ (ghi rõ, đầy đủ để liên hệ được qua Bưu điện): " . $profile->ResidentAddress);
-	$report->addLineBreak();
-	$report->addPlainText("7. Quá trình công tác (công việc, chức vụ, cơ quan): ");
+	$report->addSubsection(". Địa chỉ liên hệ (ghi rõ, đầy đủ để liên hệ được qua Bưu điện): " . $profile->ResidentAddress);
+	$report->addSubsection(". Quá trình công tác (công việc, chức vụ, cơ quan): ");
 
 	$tableWorkingTime = new Table("|l|C|C|C|C|r|");
 	$tableWorkingTime->addHorizontalLine();
@@ -146,8 +146,7 @@
 		$tableWorkingTime->addHorizontalLine();
 	}
 	$report->addTable($tableWorkingTime);
-	$report->addLineBreak();
-	$report->addPlainText("8. Quá trình đào tạo: ");
+	$report->addSubsection(". Quá trình đào tạo: ");
 	$tableTrainingProcess = new Table("|l|C|C|C|C|C|C|r|");
 	$rowTitle = array("TT", "Thời gian", "Tên cơ sở đào tạo", "Tên cơ sở đào tạo (Tiếng Anh)", "Địa chỉ", "Chuyên ngành", "Chuyên ngành (Tiếng Anh)", "Bằng cấp", );
 	$tableTrainingProcess->addHorizontalLine();
@@ -160,8 +159,7 @@
 		$tableTrainingProcess->addHorizontalLine();
 	}
 	$report->addTable($tableTrainingProcess);
-	$report->addLineBreak();
-	$report->addPlainText("9. Đã được công nhận chức danh: ");
+	$report->addSubsection(". Đã được công nhận chức danh: ");
 	if($isapplyprofessor == 1){
 		$report->addPlainText("Phó Giáo sư.");
 	} else{
@@ -170,23 +168,21 @@
 	$report->addLineBreak();
 	$report->addPlainText("Thời gian: " . $profile->AssProf_Date . ", ngành " . $profile->ResearchInterest);
 	$report->addLineBreak();
-	$report->addPlainText("10. Đăng ký xét đạt tiêu chuẩn chức danh ");
+	$report->addSubsection(". Đăng ký xét đạt tiêu chuẩn chức danh ");
 	if($isapplyprofessor == 1){
 		$report->addPlainText("Giáo sư tại HĐCDGS cơ sở: " . $council->Name);
 	} else{
 		$report->addPlainText("Phó Giáo Sư tại HĐCDGS cơ sở: " . $council->Name);
 	}
 	$report->addLineBreak();
-	$report->addPlainText("11. Đăng ký xét đạt tiêu chuẩn chức danh");
+	$report->addSubsection(". Đăng ký xét đạt tiêu chuẩn chức danh");
 	if($isapplyprofessor == 1){
 		$report->addPlainText("Giáo sư  tại HĐCDGS ngành, liên ngành: " . $council2->Name);
 	} else{
 		$report->addPlainText("Phó Giáo Sư tại HĐCDGS ngành, liên ngành: " . $council2->Name);
 	}
-	$report->addLineBreak();
-	$report->addPlainText("12. Các hướng nghiên cứu chủ yếu: " . $profile->ResearchInterest);
-	$report->addLineBreak();
-	$report->addPlainText("13. Kết quả đào tạo: ");
+	$report->addSubsection(". Các hướng nghiên cứu chủ yếu: " . $profile->ResearchInterest);
+	$report->addSubsection(". Kết quả đào tạo: ");
 	$tableTrainingResult = new Table("|l|C|C|C|C|C|r|");
 	$tableTrainingResult->addHorizontalLine();
 	$rowTitle = array("Họ tên học viện", "Đối tượng", "Trách nhiệm hướng dẫn", "Thời gian", "Cơ sở đào tạo", "Năm bảo vệ");
@@ -209,8 +205,7 @@
 		$tableTrainingResult->addHorizontalLine();
 	}
 	$report->addTable($tableTrainingResult);
-	$report->addLineBreak();
-	$report->addPlainText("14. Các đề tài đã tham gia: ");
+	$report->addSubsection(". Các đề tài đã tham gia: ");
 	$tableJointedSubject = new Table("|l|C|C|C|C|C|C|r|");
 	$tableJointedSubject->addHorizontalLine();
 	$rowTitle = array("TT", "Tên chương trình/ đề tài, Mã chương trình/ đề tài", "Cấp chương trình/ đề tài", "Là chủ nhiệm chươngt trình/ đề tài", "Thời gian", "Ngày nhiệm thu", "Kết quả");
@@ -228,8 +223,7 @@
 		$tableJointedSubject->addHorizontalLine();
 	}
 	$report->addTable($tableJointedSubject);
-	$report->addLineBreak();
-	$report->addPlainText("15. Các sách đã được xuất bản: ");
+	$report->addSubsection(". Các sách đã được xuất bản: ");
 	$tablePublishedBook = new Table("|l|C|C|C|C|r|");
 	$tableJointedSubject->addHorizontalLine();
 	$rowTitle = array("TT", "Tên sách", "Danh sách tác gỉa", "Vai trò", "Loại sách", "Tên nhà xuất bản", "Năm xuất bản");
@@ -247,8 +241,7 @@
 		$tablePublishedBook->addHorizontalLine();
 	}
 	$report->addTable($tableJointedSubject);
-	$report->addLineBreak();
-	$report->addPlainText("16. Bằng sáng chế: ");
+	$report->addSubsection(". Bằng sáng chế: ");
 	$tablePatent = new Table("|l|C|C|C|r|");
 	$tablePatent->addHorizontalLine();
 	$rowTitle = array("TT", "Tên bằng sáng chế", "Danh sách tác gỉa", "Tên cơ quan cấp", "Ngày cấp bằng sáng chế");
@@ -261,8 +254,7 @@
 		$tablePatent->addHorizontalLine();
 	}
 	$report->addTable($tablePatent);
-	$report->addLineBreak();
-	$report->addPlainText("17. Khen thưởng (các huân chương, huy chương, danh hiệu): ");
+	$report->addSubsection(". Khen thưởng (các huân chương, huy chương, danh hiệu): ");
 	$tableAward = new Table("|l|C|C|r|");
 	$tableAward->addHorizontalLine();
 	$rowTitle = array("TT", "Tên khen thưởng", "Cấp khen thưởng", "Mô tả");
@@ -276,5 +268,83 @@
 	}
 	$report->addTable($tableAward);
 	$report->addLineBreak();
+
 	$report->addSection("TỰ KHAI THEO TIÊU CHUẨN CHỨC DANH GIÁO SƯ/ PHÓ GIÁO SƯ: ");
+	$report->addSubsection(". Tiêu chuẩn và nhiệm vụ của nhà giáo (tự đánh giá).......................................................................................");
+	$report->addSubsection(". Ngoại ngữ: ");
+	$report->addSubSubsecion(". Ngoại ngữ thành thạo phục vụ chuyên môn:  ................................");
+	if($language->IsStudyAbroad == 1){
+		$studyAbroad = "Có";
+	} else{
+		$studyAbroad = "Không";
+	}
+	$report->addPlainText("a)  Được đào tạo ở nước ngoài: " . $studyAbroad);
+	$report->addLineBreak();
+	$report->addPlainText("- Học ĐH tại nước: " . $language->CountryNameStudent );
+	$report->addLineBreak();
+	$report->addPlainText("- Bảo vệ luận văn ThS hoặc luận án TS hoặc TSKH  tại nước : " . $language->CountryNameMaster);
+	$report->addLineBreak();
+	if($language->IsHaveFLDegree == 1){
+		$haveFLDegree = "Có";
+	} else{
+		$haveFLDegree = "Không";
+	}
+	$report->addPlainText("b) Được đào tạo ngoại ngữ trong nước: " . $haveFLDegree);
+	$report->addLineBreak();
+	$report->addPlainText("- Trường ĐH cấp bằng tốt nghiệp ĐH ngoại ngữ: " . $language->UniversityName . "; số bằng: " . $language->DegreeNo . "; năm cấp: " . $language->DegreeYear);
+	$report->addLineBreak();
+	if($language->IsTeachingInFL == 1){
+		$teachingInFL = "Có";
+	} else{
+		$teachingInFL = "Không";
+	}
+	$report->addPlainText("c) Giảng dạy bằng tiếng nước ngoài: " . $teachingInFL);
+	$report->addLineBreak();
+	$report->addPlainText("- Giảng dạy bằng ngoại ngữ : " . $language->TeachingFL);
+	$report->addLineBreak();
+	$report->addPlainText("- Nơi giảng dạy (cơ sở đào tạo, nước): " . $language->TeachingOrg);
+	$report->addSubSubsecion(". Tiếng Anh giao tiếp ( văn bằng, chứng chỉ): " . $language->CommEnglish);
+	$report->addSection("CAM ĐOAN CỦA NGƯỜI ĐĂNG KÝ XÉT CÔNG NHẬN ĐẠT TIÊU CHUẨN CHỨC DANH: ");
+	$report->addPlainText("Tôi cam đoan những điều khai trên là đúng, nếu sai tôi xin chịu trách nhiệm trước pháp luật. ");
+	$report->addhspace("6cm");
+	$report->addPlainText("...,ngày.....tháng.....năm  201...");
+	$report->addLineBreak();
+	$report->addhspace("7cm");
+	$report->addPlainText("Người đăng ký");
+	$report->addLineBreak();
+	$report->addhspace("6.5cm");
+	$report->addPlainText("(Ghi rõ họ tên, ký tên)");
+	$report->addLineBreak();
+	$report->addLineBreak();
+	$report->addLineBreak();
+	$report->addLineBreak();
+	$report->addSection("XÁC NHẬN CỦA THỦ TRƯỞNG CƠ QUAN NƠI ĐANG LÀM VIỆC: ");
+	$report->addPlainText("- Về những nội dung \"Thông tin cá nhân\" ứng viên đã kê khai;");
+	$report->addLineBreak();
+	$report->addLineBreak();
+	$report->addLineBreak();
+	$report->addPlainText("- Về giai đoạn ứng viên thuộc biên chế giảng viên đại học và mức độ hoàn thành nhiệm vụ trong giai đoạn này.");
+	$report->addLineBreak();
+	$report->addLineBreak();
+	$report->addLineBreak();
+	$report->addPlainText("Trong những trường hợp còn lại người khai tự chịu trách nhiệm trước pháp luật về các nội dung đã kê khai. ");
+	$report->addLineBreak();
+	$report->addLineBreak();
+	$report->addLineBreak();
+	$report->addPlainText("...,ngày.....tháng.....năm  201...");
+	$report->addLineBreak();
+	$report->addhspace("7cm");
+	$report->addPlainText("Thủ trưởng cơ quan ");
+	$report->addLineBreak();
+	$report->addhspace("6cm");
+	$report->addPlainText("(Ghi rõ họ tên, ký tên, đóng dấu)");
+	$report->addLineBreak();
+	$report->addLineBreak();
+	$report->addLineBreak();
+	$report->addLineBreak();
+	$report->addPlainText("Chú ý:  Bản đăng ký làm thành 04 bản.");
+	$report->addLineBreak();
+	$report->addPlainText("- 1 bản và 2 ảnh mầu 4X6 (mặt sau ảnh ghi họ tên, ngày tháng năm sinh, ngành đăng ký xét công nhận đạt tiêu chuẩn chức danh) gửi về Văn phòng HĐCDGSNN. (Địa chỉ: Tầng 7 Tòa nhà Thư viện Tạ Quang Bửu, trường Đại học Bách Khoa Hà Nội, số 01 Đại Cồ Việt, Hà Nội, Tel: (84.4) 38.697.943; Fax: (84.4) 38.680.806; Email:hdcdgsnn@scpt.gov.vn).");
+	$report->addLineBreak();
+	$report->addPlainText("- 3 bản còn lại đóng vào 03 bộ hồ sơ.");
 ?>
